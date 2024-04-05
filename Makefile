@@ -41,8 +41,10 @@ clean_vignette:
 	rm -f vignettes/*.rda vignettes/*.map vignettes/*.Rdata
 
 deps:
-	@echo "Invoking devtools::install_dev_deps()"
-	R -e "all = as.data.frame(devtools::dev_package_deps('.', dependencies=TRUE)); needed = all[['diff']] < 0; needed = all[needed, 'package']; for (t in needed) { if (class(try(suppressMessages(eval(parse(text=paste0('library(', t, ')')))))) == 'try-error') { BiocManager::install(t, update=FALSE) } }"
+	@echo "Invoking dev_package_deps() and BiocManager::install()."
+	@Rscript -e "all = as.data.frame(devtools::dev_package_deps('.', dependencies='Depends')); needed = all[['diff']] < 0; needed = all[needed, 'packagewww']; BiocManager::install(needed)"
+	@Rscript -e "all = as.data.frame(devtools::dev_package_deps('.', dependencies='Imports')); needed = all[['diff']] < 0; needed = all[needed, 'packagewww']; BiocManager::install(needed)"
+	@Rscript -e "all = as.data.frame(devtools::dev_package_deps('.', dependencies='Suggests')); needed = all[['diff']] < 0; needed = all[needed, 'packagewww']; BiocManager::install(needed)"
 
 document: roxygen vignette reference
 
