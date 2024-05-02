@@ -2,6 +2,7 @@
 % Please edit documentation in R/eupathdb.R
 \docType{package}
 \name{EuPathDB}
+\alias{EuPathDB-package}
 \alias{EuPathDB}
 \title{EuPathDB: Access EuPathDB annotations using AnnotationHub}
 \description{

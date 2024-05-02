@@ -5,7 +5,7 @@
 \title{Returns metadata for all eupathdb organisms.}
 \usage{
 download_eupath_metadata(
-  overwrite = TRUE,
+  overwrite = FALSE,
   webservice = "eupathdb",
   bioc_version = NULL,
   eu_version = NULL,
