@@ -498,3 +498,25 @@ download_real_taxa <- function(webservice, tld, service_directory) {
   funkytown <- "curl 'https://tritrypdb.org/tritrypdb/service/record-types/transcript/searches/GenesByTaxon?expandParams=true' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'x-client-wdk-timestamp: 1611591828791'  -H 'x-client-retry-count: 0'  -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'  -H 'content-type: application/json; charset=utf-8'  -H 'Accept: */*'  -H 'Sec-Fetch-Site: same-origin'  -H 'Sec-Fetch-Mode: cors'  -H 'Sec-Fetch-Dest: empty'  -H 'Referer: https://tritrypdb.org/tritrypdb/app/search/transcript/GenesByTaxon'  -H 'Accept-Language: en-US,en;q=0.9'  --compressed"
   curl_result <- system2("/bin/bash", args = c("-c", shQuote(funkytown)), stdout = TRUE)
 }
+
+
+#' Set up the taxonomy Tags for the various EuPathDB sub-projects.
+get_tags <- function() {
+  shared_tags <- c("Annotation", "EuPathDB", "Eukaryote", "Pathogen", "Parasite")
+  tags <- list(
+    "AmoebaDB" = c(shared_tags, "Amoeba"),
+    "CryptoDB" = c(shared_tags, "Cryptosporidium"),
+    "FungiDB" = c(shared_tags, "Fungus", "Fungi"),
+    "GiardiaDB" = c(shared_tags, "Giardia"),
+    "MicrosporidiaDB" = c(shared_tags, "Microsporidia"),
+    "PiroplasmaDB" = c(shared_tags, "Piroplasma"),
+    "PlasmoDB" = c(shared_tags, "Plasmodium"),
+    "SchistoDB" = c(shared_tags, "Schistosoma"),
+    "ToxoDB" = c(shared_tags, "Toxoplasmosis"),
+    "TrichDB" = c(shared_tags, "Trichomonas"),
+    "TriTrypDB" = c(shared_tags, "Trypanosome", "Kinetoplastid", "Leishmania"))
+  tag_strings <- lapply(tags, function(x) {
+    paste(x, collapse = ":")
+  })
+  return(tag_strings)
+}

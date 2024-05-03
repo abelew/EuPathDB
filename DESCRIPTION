@@ -58,7 +58,6 @@ Collate:
  'get_kegg_orgn.R'
  'get_metadata_filename.R'
  'get_semantic_columns.R'
- 'get_tags.R'
  'kegg_vector_to_df.R'
  'get_versions.R'
  'load_ah_annotations.R'
