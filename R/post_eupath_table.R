@@ -48,7 +48,7 @@ post_eupath_table <- function(entry, species, tables = "GOTerms", table_name = N
     warning("   An error status code was returned.")
     return(data.frame())
   } else if (length(result[["content"]]) < 100) {
-    message("   A minimal amount of content was returned.")
+    message("   A minimal amount of content was returned for table: ", tables, ".")
   }
   cont <- httr::content(result, encoding = "UTF-8", as = "text")
   ##handle <- textConnection(cont)

@@ -5,12 +5,12 @@
 \title{Move a package file to its final location for collation by
 AnnotationHubData.}
 \usage{
-move_final_orgdb_package(pkglist, build_dir = "build")
+move_final_orgdb_package(pkgnames, build_dir = "build")
 }
 \arguments{
-\item{pkglist}{Information list from a make_pkg function.}
-
 \item{build_dir}{base working directory.}
+
+\item{pkglist}{Information list from a make_pkg function.}
 
 \item{type}{Which type of package is this?}
 }

@@ -278,7 +278,7 @@ make_eupath_orgdb <- function(entry, install = TRUE, reinstall = FALSE, overwrit
   ## Now lets finally make the package!
   lib_result <- requireNamespace("AnnotationForge")
   att_result <- try(attachNamespace("AnnotationForge"), silent = TRUE)
-  message(" Calling makeOrgPackage() for ", entry[["TaxonUnmodified"]])
+  message("Calling makeOrgPackage() for ", entry[["TaxonUnmodified"]])
 
   built_orgdb_path <- NULL
   if (isTRUE(verbose)) {

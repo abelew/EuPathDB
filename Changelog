@@ -1,0 +1,3 @@
+* 202309: Looking to pick off a couple warnings
+	Note: possible error in 'write_eupath_metadata(metadata = valid_metadata, ': unused argument (build_dir = build_dir)
+	Note: possible error in 'move_final_package(organdb_path, ': unused argument (build_dir = build_dir)

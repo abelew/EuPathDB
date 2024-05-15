@@ -8,8 +8,8 @@
 #'  bsgenome/orgdb/txdb/granges/orgdbi.
 #' @param build_dir toplevel dirname of the intermediate/final files.
 #' @param type Type of package containing the final outputs.
-make_move_retlist <- function(pkglist, build_dir = build, type = "orgdb") {
-  pkgname <- basename(as.character(pkglist[["type"]]))
+make_move_retlist <- function(pkgnames, build_dir = build, type = "orgdb") {
+  pkgname <- basename(as.character(pkgnames[[type]]))
   version_string <- format(Sys.time(), "%Y.%m")
 
   final_tar_dir <- file.path(build_dir, "tar", type)
@@ -91,8 +91,8 @@ move_final_txdb_package <- function(pkglist, build_dir = "build") {
 #' @param pkglist Information list from a make_pkg function.
 #' @param type Which type of package is this?
 #' @param build_dir base working directory.
-move_final_orgdb_package <- function(pkglist, build_dir = "build") {
-  retlist <- make_move_retlist(pkglist, build_dir = build_dir, type = "orgdb")
+move_final_orgdb_package <- function(pkgnames, build_dir = "build") {
+  retlist <- make_move_retlist(pkgnames, build_dir = build_dir, type = "orgdb")
   tar_moved <- FALSE
   if (file.exists(retlist[["package_path"]])) {
     message("It appears the tarball was already moved to: ", retlist[["package_path"]])

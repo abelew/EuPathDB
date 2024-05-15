@@ -377,7 +377,7 @@ download_eupath_metadata <- function(overwrite = FALSE, webservice = "eupathdb",
     ## But, right now we are in the process of making that match, so use the
     ## Species column here.
     pkg_names <- get_eupath_pkgnames(metadatum, column = "TaxonomyName")
-    message("Working on: ", i, ": ", pkg_names[["orgdb"]], ".")
+    message("Working on ", i, "/", nrow(metadata), ": ", pkg_names[["orgdb"]], ".")
 
     species_info <- make_taxon_names(metadatum, column = "TaxonomyName")
     metadatum["BsgenomePkg"] <- pkg_names[["bsgenome"]]

@@ -37,7 +37,7 @@ make_eupath_granges <- function(entry, eu_version = NULL, copy_s3 = FALSE) {
 
   ## Dump a granges object and save it as an rda file.
   granges_result <- rtracklayer::import.gff3(input_gff)
-  name_order <- names(seqinfo(granges_result))
+  name_order <- names(GenomeInfoDb::seqinfo(granges_result))
   chromosome_info <- chromosome_info[name_order, ]
   length_vector <- chromosome_info[["length"]]
 
