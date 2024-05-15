@@ -204,7 +204,7 @@ make_eupath_txdb <- function(entry = NULL, eu_version = NULL,
   }
 
   if (isTRUE(workedp)) {
-    final_path <- move_final_txdb_package(pkgname)
+    final_path <- move_final_txdb_package(pkgnames)
     final_deleted <- unlink(x = install_dir, recursive = TRUE, force = TRUE)
     message("Moved built tar to ", final_path, " and deleted installation directory:")
     message(install_dir)

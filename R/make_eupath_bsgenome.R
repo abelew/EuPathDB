@@ -189,6 +189,8 @@ make_eupath_bsgenome <- function(entry, eu_version = NULL, build_dir = "build",
       }
     }
 
+    ## TODO: The rest of this function should be in move_final_bsgenome_package() instead of here.
+
     pkg_archive_dir <- file.path(build_dir, "packages", "bsgenome")
     if (!file.exists(pkg_archive_dir)) {
       tt <- dir.create(pkg_archive_dir, recursive = TRUE)

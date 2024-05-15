@@ -351,7 +351,7 @@ make_eupath_orgdb <- function(entry, install = TRUE, reinstall = FALSE, overwrit
 
   final_paths <- list()
   if (isTRUE(workedp)) {
-    final_paths <- move_final_orgdb_package(orgdb_path, build_dir = build_dir)
+    final_paths <- move_final_orgdb_package(pkgnames, build_dir = build_dir)
     orgdb_path <- final_paths[["data_path"]]
     rda_files <- get_rda_filename(entry, "all")
     for (rda in rda_files) {

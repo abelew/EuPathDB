@@ -9,7 +9,7 @@
 #' @param build_dir toplevel dirname of the intermediate/final files.
 #' @param type Type of package containing the final outputs.
 make_move_retlist <- function(pkglist, build_dir = build, type = "orgdb") {
-  pkgname <- basename(as.character(pkglist))
+  pkgname <- basename(as.character(pkglist[["type"]]))
   version_string <- format(Sys.time(), "%Y.%m")
 
   final_tar_dir <- file.path(build_dir, "tar", type)
@@ -58,6 +58,7 @@ move_final_bsgenome_package <- function(pkglist, build_dir = "build") {
 #' @param build_dir dirname of the build tree.
 move_final_txdb_package <- function(pkglist, build_dir = "build") {
   retlist <- make_move_retlist(pkglist, build_dir = build_dir, type = "txdb")
+  pkgname <- pkglist[["txdb"]]
   ## These are not needed because I do this at the download step now.
   gff_file <- file.path(build_dir, glue("{pkgname}.gff"))
   data_destination <- gff_file
@@ -73,6 +74,8 @@ move_final_txdb_package <- function(pkglist, build_dir = "build") {
   }
   tar_moved <- file.rename(retlist[["starting_tar"]], retlist[["package_path"]])
   retlist[["data_path"]] <- data_destination
+  retlist[["gff_moved"]] <- gff_moved
+  retlist[["tar_moved"]] <- tar_moved
   return(retlist)
 }
 
