@@ -178,7 +178,7 @@ make_eupath_bsgenome <- function(entry, eu_version = NULL, build_dir = "build",
   copy_s3 <- FALSE
   if (isTRUE(workedp)) {
     if (isTRUE(install)) {
-      inst <- try(devtools::install(pkgname, quiet = TRUE))
+      inst <- try(install.packages(pkgname, quiet = TRUE))
     }
     if (isTRUE(copy_s3)) {
       source_dir <- basename(bsgenome_dir)
