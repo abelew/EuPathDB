@@ -67,6 +67,7 @@ move_final_txdb_package <- function(pkglist, build_dir = "build") {
     dir.create(gff_dir, recursive = TRUE)
   }
   data_destination <- file.path(gff_dir, basename(gff_file))
+  gff_moved <- FALSE
   if (file.exists(gff_file)) {
     gff_moved <- file.rename(from = gff_file, data_destination)
   } else {
