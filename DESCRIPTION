@@ -1,6 +1,6 @@
 Package: EuPathDB
 Title: Provides access to pathogen annotation resources available on EuPathDB databases
-Version: 202408
+Version: 2024.08
 Author: Keith Hughitt, Ashton Trey Belew
 Authors@R: c(person("Keith", "Hughitt", email="khughitt@umd.edu", role=c("aut","cre")),
              person("Ashton", "Belew", email="abelew@gmail.com", role=c("aut")))
