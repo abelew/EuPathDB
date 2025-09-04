@@ -91,9 +91,4 @@ NULL
   get(fun, envir = asNamespace(pkg), inherits = FALSE)
 }
 
-getMaintainer <- "GenomicFeatures" %:::% ".getMaintainer"
-getMetaDataValue <- "GenomicFeatures" %:::% ".getMetaDataValue"
-getTxDbVersion <- "GenomicFeatures" %:::% ".getTxDbVersion"
-normAuthor <- "GenomicFeatures" %:::% ".normAuthor"
-
 ## EOF

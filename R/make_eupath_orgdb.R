@@ -345,7 +345,7 @@ make_eupath_orgdb <- function(entry, install = TRUE, reinstall = FALSE, overwrit
   }
   if (isTRUE(install)) {
     install_path <- file.path(getwd(), orgdb_path)
-    inst <- suppressWarnings(try(devtools::install_local(install_path)))
+    inst <- suppressWarnings(try(devtools::install_local(install_path, quiet = TRUE, upgrade = "never")))
     workedp <- ! "try-error" %in% class(inst)
   }
 

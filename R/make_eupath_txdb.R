@@ -199,7 +199,7 @@ make_eupath_txdb <- function(entry = NULL, eu_version = NULL,
   }
 
   if (isTRUE(install)) {
-    inst <- try(devtools::install(install_dir, quiet = TRUE))
+    inst <- try(devtools::install(install_dir, upgrade = "never", quiet = TRUE))
     workedp <- ! "try-error" %in% class(inst)
   }
 
