@@ -5,7 +5,6 @@ context("README")
 devtools::load_all("../../")
 ## Test that everything in the README works (excepting for now the AH)
 
-library(EuPathDB)
 ## I pretty much always use Leishmania major strain friedlin as my example.
 
 ## This downloads metadata from every eupathdb resource:
@@ -35,22 +34,24 @@ tritryp_metadata <- download_eupath_metadata(webservice = "tritrypdb",
 ## Extract an entry of interest, if metadata is not provided it will
 ## download it (defaulting to all eupathdb webservices, which can take
 ## a little while.
-lm_entry <- get_eupath_entry(species = "MHOM/COL", metadata = tritryp_metadata)
+lp_entry <- get_eupath_entry(species = "MHOM/COL", metadata = tritryp_metadata)
 ## Look at the entry of interest.
-colnames(lm_entry)
+colnames(lp_entry)
 ## Create an orgdb database
-orgdb_pkgname <- make_eupath_orgdb(lm_entry, install = TRUE, reinstall = TRUE,
+orgdb_pkgname <- make_eupath_orgdb(lp_entry, install = TRUE, reinstall = TRUE,
                                    overwrite = TRUE, verbose = TRUE)
 ## Create a txdb database, since there are so few introns in the
 ## trypanosomatids, it tends to be less interesting for them...
-txdb_pkgname <- make_eupath_txdb(lm_entry, install = TRUE, reinstall = TRUE,
+txdb_pkgname <- make_eupath_txdb(lp_entry, install = TRUE, reinstall = TRUE,
                                  verbose = TRUE)
-grange_pkgname <- make_eupath_granges(lm_entry)
+grange_pkgname <- make_eupath_granges(lp_entry)
 ## Create a bsgenome, note you _must_ increase the number of open
 ## files for this to work with fragmented assemblies.[1]
-bsgenome_pkgname <- make_eupath_bsgenome(lm_entry)
+## This species (Leishmania panamensis) is a good example, if you have
+## not increased that limit, it will fail terribly.
+bsgenome_pkgname <- make_eupath_bsgenome(lp_entry, reinstall = TRUE)
 ## Create the union of the orgdb/Txdb; this has not been tested in a _long_ time
-organismdbi_pkgname <- make_eupath_organismdbi(lm_entry)
+organismdbi_pkgname <- make_eupath_organismdbi(lp_entry)
 ## Get a big monster data table of annotations
 pkgname <- as.character(orgdb_pkgname[[1]])
 major_annotations <- load_orgdb_annotations(pkgname)
@@ -81,7 +82,7 @@ test_that("We downloaded metadata of species matching the taxonomyDb/genomeInfoD
 })
 
 test_that("We got the correct entry?", {
-  expect_equal("Leishmania major strain Friedlin", lm_entry[["TaxonUnmodified"]])
+  expect_equal("Leishmania major strain Friedlin", lp_entry[["TaxonUnmodified"]])
 })
 
 ## We will poke at the orgdb later, so just see that we got a
@@ -91,7 +92,7 @@ test_that("We got a reasonable result from make_orgdb:", {
 })
 
 ## Test the invocation of:
-## txdb_pkgname <- make_eupath_txdb(lm_entry)
+## txdb_pkgname <- make_eupath_txdb(lp_entry)
 test_that("We got a reasonable result from make_txdb:", {
   expect_equal(c("gff", "txdb_name"), names(txdb_pkgname))
 })
@@ -102,7 +103,7 @@ test_that("We can load the TxDb:", {
 })
 
 ## Test the invocation of:
-## bsgenome_pkgname <- make_eupath_bsgenome(lm_entry)
+## bsgenome_pkgname <- make_eupath_bsgenome(lp_entry)
 test_that("We got a reasonable result from make_bsgenome:", {
   expect_equal("bsgenome_name", names(bsgenome_pkgname))
 })
@@ -114,7 +115,7 @@ test_that("We have the first chromosome?", {
 })
 
 ## Test the invocation of:
-## organismdbi_pkgname <- make_eupath_organismdbi(lm_entry)
+## organismdbi_pkgname <- make_eupath_organismdbi(lp_entry)
 test_that("We got a reasonable result from make_organismdbi:", {
   expect_equal("organdb_name", names(organismdbi_pkgname))
 })

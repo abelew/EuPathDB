@@ -1,3 +1,84 @@
+#' Taken directly from txdbmaker, previously GenomicFeature
+#' In txdbmaker this is a not exported dot function.
+#'
+#' @param txdb Txdb to query
+#' @param field in the txdb
+getMetaDataValue <- function(txdb, name) {
+  con <- AnnotationDbi::dbconn(txdb)
+  query <- paste0("SELECT value FROM metadata WHERE name='", name, "'")
+  res <- DBI::dbGetQuery(con, query)[[1]]
+  if (!length(res)) {
+    stop("metadata table missing a value for '", name, "'")
+  }
+  return(res)
+}
+
+getMaintainer <- function(authors) {
+  m <- vapply(authors, function(a) "cre" %in% a$role, logical(1L))
+  if (sum(m) != 1L) {
+    stop("there must be one 'maintainer'")
+  }
+  maintainer <- authors[m]
+  maintainer$role <- list(NULL)
+  maintainer$comment <- list(NULL)
+  maintainer
+}
+
+normMaintainer <- function(maintainer) {
+  maintainer <- as.person(maintainer)
+  if (length(maintainer) > 1L) {
+    stop("more than one 'maintainer' provided")
+  }
+  maintainer
+}
+
+#' Taken directly from txdbmaker, previously GenomicFeature
+#' In txdbmaker this is a not exported dot function.
+#'
+#' @param txdb Txdb to query
+getTxDbVersion <- function(txdb) {
+  type <- getMetaDataValue(txdb, "Data source")
+  if (type == "UCSC") {
+    version <- paste(getMetaDataValue(txdb, "Genome"),
+                     "genome based on the",
+                     getMetaDataValue(txdb, "UCSC Table"), "table")
+  } else if (type == "BioMart") {
+    version <- getMetaDataValue(txdb, "BioMart database version")
+  } else {
+    version <- getMetaDataValue(txdb, "Data source")
+  }
+  return(version)
+}
+
+#' Also from txdbmaker
+normAuthor <- function(authors, maintainer) {
+  authors <- as.person(authors)
+  if (!missing(maintainer)) {
+    authors <- mergeMaintainer(authors, maintainer)
+  }
+  authors
+}
+
+mergeMaintainer <- function(authors, maintainer) {
+  maintainer <- normMaintainer(maintainer)
+  maintainer$role <- list(union(maintainer$role, "cre"))
+  m <- unlist(authors$given) == maintainer$given &
+    unlist(authors$family) == maintainer$family
+  if (any(m)) {
+    authors$role[m] <- list(union(unlist(authors$role[m]), "cre"))
+    if (!is.null(maintainer$email)) {
+      authors$email[m] <- maintainer$email
+    }
+  } else {
+    authors <- c(authors, maintainer)
+  }
+  maintainer <- getMaintainer(authors)
+  if (is.null(maintainer$email)) {
+    stop("the 'maintainer' must have an email address")
+  }
+  authors
+}
+
 #' Generate an EuPathDB organism TxDb package.
 #'
 #' This will hopefully create a txdb package and granges savefile for a single
@@ -12,6 +93,7 @@
 #' @param copy_s3 Copy the 2bit file into an s3 staging directory for copying to AnnotationHub?
 #' @return TxDb instance name.
 #' @author Keith Hughitt with significant modifications by atb.
+#' @import txdbmaker
 #' @export
 make_eupath_txdb <- function(entry = NULL, eu_version = NULL,
                              reinstall = FALSE, install = TRUE,
@@ -85,20 +167,20 @@ make_eupath_txdb <- function(entry = NULL, eu_version = NULL,
   txdb_metadata <- txdb_metadata[, c("name", "value")]
   txdb <- NULL
   if (!is.na(entry[["TaxonomyID"]])) {
-    txdb <- try(GenomicFeatures::makeTxDbFromGFF(
+    txdb <- try(txdbmaker::makeTxDbFromGFF(
       taxonomyId = entry[["TaxonomyID"]],
       file = input_gff, format = "gff", chrominfo = chromosome_info,
       dataSource = entry[["SourceUrl"]],
       organism = glue::glue("{taxa[['genus']]} {taxa[['species']]}")))
   } else {
-    txdb <- try(GenomicFeatures::makeTxDbFromGFF(
+    txdb <- try(txdbmaker::makeTxDbFromGFF(
       file = input_gff, format = "gff", chrominfo = chromosome_info,
       dataSource = entry[["SourceUrl"]],
       organism = glue::glue("{taxa[['genus']]} {taxa[['species']]}")))
   }
   if ("try-error" %in% class(txdb)) {
     ## Perhaps it is an invalid taxonomy ID?
-    txdb <- try(GenomicFeatures::makeTxDbFromGFF(
+    txdb <- try(txdbmaker::makeTxDbFromGFF(
       taxonomyId = 32644, ## 32644 is unidentified according to:
       ## https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=32644
       file = input_gff, format = "gff", chrominfo = chromosome_info,
@@ -115,7 +197,7 @@ make_eupath_txdb <- function(entry = NULL, eu_version = NULL,
   providerVersion <- getTxDbVersion(txdb)
   dbType <- getMetaDataValue(txdb, "Db type")
   authors <- normAuthor(entry[["Maintainer"]], entry[["Maintainer"]])
-  template_path <- system.file("txdb-template", package = "GenomicFeatures")
+  template_path <- system.file("txdb-template", package = "txdbmaker")
   version_string <- format(Sys.time(), "%Y.%m")
   data_source <- getMetaDataValue(txdb, "Data source")
 
@@ -128,7 +210,7 @@ make_eupath_txdb <- function(entry = NULL, eu_version = NULL,
     "AUTHOR" = paste(authors, collapse = ", "),
     "MAINTAINER" = as.character(getMaintainer(authors)),
     "GFVERSION" = getMetaDataValue(txdb,
-                                   "GenomicFeatures version at creation time"),
+                                   "txdbmaker version at creation time"),
     "LIC" = "Artistic-2.0",
     "DBTYPE" = dbType,
     "ORGANISM" = getMetaDataValue(txdb, "Organism"),
